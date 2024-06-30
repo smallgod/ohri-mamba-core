@@ -1,8 +1,13 @@
 -- $BEGIN
 -- CALL sp_xf_system_drop_all_tables_in_schema($target_database);
-CALL sp_xf_system_drop_all_tables_in_schema();
+
+CALL sp_xf_system_drop_all_tables_in_schema;
+
+CALL sp_mamba_create_error_log_table();
 
 CALL sp_mamba_dim_locale;
+
+CALL sp_mamba_dim_table_partition;
 
 CALL sp_mamba_dim_location;
 
@@ -53,4 +58,5 @@ CALL sp_mamba_flat_encounter_table_insert_all;
 CALL sp_mamba_flat_encounter_obs_group_table_create_all;
 
 CALL sp_mamba_flat_encounter_obs_group_table_insert_all;
+
 -- $END

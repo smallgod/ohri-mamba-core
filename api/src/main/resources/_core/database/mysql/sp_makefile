@@ -7,6 +7,7 @@ functions/fn_mamba_get_obs_value_column.sql
 functions/fn_mamba_age_calculator.sql
 functions/fn_mamba_get_datatype_for_concept.sql
 functions/fn_mamba_generate_report_array_from_automated_json_table.sql
+functions/fn_mamba_generate_report_array_from_automated_json_incremental.sql
 functions/fn_mamba_array_length.sql
 functions/fn_mamba_get_array_item_by_index.sql
 functions/fn_mamba_json_array_length.sql
@@ -19,12 +20,15 @@ functions/fn_mamba_json_object_at_index.sql
 functions/fn_mamba_json_value_by_key.sql
 functions/fn_mamba_remove_all_whitespace.sql
 functions/fn_mamba_remove_quotes.sql
+functions/fn_mamba_remove_special_characters.sql
 
 stored-procedures/sp_xf_system_drop_all_functions_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_stored_procedures_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_objects_in_schema.sql
 stored-procedures/sp_xf_system_drop_all_tables_in_schema.sql
 stored-procedures/sp_mamba_etl_execute.sql
+stored-procedures/sp_mamba_etl_schedule_table_create.sql
+stored-procedures/sp_mamba_etl_schedule.sql
 
 stored-procedures/sp_mamba_flat_encounter_table_create.sql
 stored-procedures/sp_mamba_flat_encounter_table_create_all.sql
@@ -37,6 +41,7 @@ stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert.sql
 stored-procedures/sp_mamba_flat_encounter_obs_group_table_insert_all.sql
 
 stored-procedures/sp_mamba_json_files_insert.sql
+stored-procedures/sp_mamba_json_files_insert_incremental.sql
 stored-procedures/sp_mamba_missing_table_column_names_insert.sql
 
 stored-procedures/sp_mamba_multiselect_values_update.sql
@@ -50,7 +55,14 @@ stored-procedures/sp_mamba_generate_report_wrapper.sql
 #stored-procedures/sp_mamba_generate_report_columns_wrapper.sql
 stored-procedures/sp_mamba_write_automated_json_config.sql
 stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_table.sql
+stored-procedures/sp_extract_configured_flat_table_file_into_dim_json_incremental.sql
 stored-procedures/sp_mamba_locale_insert_helper.sql
+stored-procedures/sp_mamba_table_partition_insert_helper.sql
+stored-procedures/sp_mamba_extract_report_column_names.sql
+stored-procedures/sp_mamba_create_error_log_table.sql
+stored-procedures/sp_mamba_insert_error_log_table.sql
+stored-procedures/sp_mamba_drop_some_tables_before_incremental_update.sql
+stored-procedures/sp_mamba_data_processing_flatten_incremental.sql
 
 
 #############################################################################
@@ -74,28 +86,35 @@ dimensions/dim_concept_datatype/sp_mamba_dim_concept_datatype.sql
 dimensions/dim_concept/sp_mamba_dim_concept_create.sql
 dimensions/dim_concept/sp_mamba_dim_concept_insert.sql
 dimensions/dim_concept/sp_mamba_dim_concept_update.sql
+dimensions/dim_concept/sp_mamba_dim_concept_incremental_update.sql
 dimensions/dim_concept/sp_mamba_dim_concept.sql
 
 dimensions/dim_concept_answer/sp_mamba_dim_concept_answer_create.sql
 dimensions/dim_concept_answer/sp_mamba_dim_concept_answer_insert.sql
+dimensions/dim_concept_answer/sp_mamba_dim_concept_answer_incremental_update.sql
 dimensions/dim_concept_answer/sp_mamba_dim_concept_answer.sql
 
 dimensions/dim_concept_name/sp_mamba_dim_concept_name_create.sql
 dimensions/dim_concept_name/sp_mamba_dim_concept_name_insert.sql
+
 #dimensions/dim_concept_name/sp_mamba_dim_concept_name_update.sql
+dimensions/dim_concept_name/sp_mamba_dim_concept_name_incremental_update.sql
 dimensions/dim_concept_name/sp_mamba_dim_concept_name.sql
 
 dimensions/dim_encounter_type/sp_mamba_dim_encounter_type_create.sql
 dimensions/dim_encounter_type/sp_mamba_dim_encounter_type_insert.sql
+dimensions/dim_encounter_type/sp_mamba_dim_encounter_type_incremental_update.sql
 dimensions/dim_encounter_type/sp_mamba_dim_encounter_type.sql
 
 dimensions/dim_encounter/sp_mamba_dim_encounter_create.sql
 dimensions/dim_encounter/sp_mamba_dim_encounter_insert.sql
 dimensions/dim_encounter/sp_mamba_dim_encounter_update.sql
+dimensions/dim_encounter/sp_mamba_dim_encounter_incremental_update.sql
 dimensions/dim_encounter/sp_mamba_dim_encounter.sql
 
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_create.sql
 config/sp_mamba_dim_concept_metadata_insert.sql
+config/sp_mamba_dim_concept_metadata_incremental_insert.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_update.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata_cleanup.sql
 dimensions/dim_metadata/sp_mamba_dim_concept_metadata.sql
@@ -108,6 +127,7 @@ dimensions/dim_report_definition/sp_mamba_dim_report_definition.sql
 dimensions/dim_person/sp_mamba_dim_person_create.sql
 dimensions/dim_person/sp_mamba_dim_person_insert.sql
 dimensions/dim_person/sp_mamba_dim_person_update.sql
+dimensions/dim_person/sp_mamba_dim_person_incremental_update.sql
 dimensions/dim_person/sp_mamba_dim_person.sql
 
 dimensions/dim_patient_identifier/sp_mamba_dim_patient_identifier_create.sql
@@ -126,16 +146,19 @@ dimensions/dim_person_address/sp_mamba_dim_person_address.sql
 dimensions/dim_user/sp_mamba_dim_user_create.sql
 dimensions/dim_user/sp_mamba_dim_user_insert.sql
 dimensions/dim_user/sp_mamba_dim_user_update.sql
+dimensions/dim_user/sp_mamba_dim_user_incremental_update.sql
 dimensions/dim_user/sp_mamba_dim_user.sql
 
 dimensions/dim_relationship/sp_mamba_dim_relationship_create.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship_insert.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship_update.sql
+dimensions/dim_relationship/sp_mamba_dim_relationship_incremental_update.sql
 dimensions/dim_relationship/sp_mamba_dim_relationship.sql
 
 dimensions/dim_orders/sp_mamba_dim_orders_create.sql
 dimensions/dim_orders/sp_mamba_dim_orders_insert.sql
 dimensions/dim_orders/sp_mamba_dim_orders_update.sql
+dimensions/dim_orders/sp_mamba_dim_orders_incremental_update.sql
 dimensions/dim_orders/sp_mamba_dim_orders.sql
 
 dimensions/dim_agegroup/sp_mamba_dim_agegroup_create.sql
@@ -158,9 +181,18 @@ dimensions/dim_json/sp_mamba_dim_json_insert.sql
 dimensions/dim_json/sp_mamba_dim_json_update.sql
 dimensions/dim_json/sp_mamba_dim_json.sql
 
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_create.sql
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_insert.sql
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental_update.sql
+dimensions/dim_json_incremental/sp_mamba_dim_json_incremental.sql
+
 dimensions/dim_locale/sp_mamba_dim_locale_create.sql
 config/sp_mamba_dim_locale_insert.sql
 dimensions/dim_locale/sp_mamba_dim_locale.sql
+
+dimensions/dim_table_partition/sp_mamba_dim_table_partition_create.sql
+config/sp_mamba_dim_table_partition_insert.sql
+dimensions/dim_table_partition/sp_mamba_dim_table_partition.sql
 
 #############################################################################
 ### A single SP that invokes (CALLs) the above prepared stored procedures ###
