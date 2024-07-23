@@ -50,6 +50,7 @@ BEGIN
             END IF;
 
             SET report_count = report_count + 1;
+
         END WHILE;
 
 END //

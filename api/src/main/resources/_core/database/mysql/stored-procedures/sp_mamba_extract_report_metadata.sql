@@ -10,6 +10,10 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
 
+    SELECT DISTINCT(table_partition_number)
+    INTO @table_partition_number
+    FROM mamba_etl_user_settings;
+
     SELECT JSON_EXTRACT(report_data, '$.flat_report_metadata') INTO @report_array;
     SELECT JSON_LENGTH(@report_array) INTO @report_array_len;
 
@@ -50,7 +54,7 @@ BEGIN
                         SELECT JSON_EXTRACT(@column_keys_array, CONCAT('$[', @col_count, ']')) INTO @field_name;
                         SELECT JSON_EXTRACT(@column_array, CONCAT('$.', @field_name)) INTO @concept_uuid;
 
-                        IF @col_count > 50 THEN
+                        IF @col_count > @table_partition_number THEN
 
                             SET @table_name = CONCAT(JSON_UNQUOTE(@flat_table_name), '_', @current_table_count);
                             SET @current_table_count = @current_table_count;

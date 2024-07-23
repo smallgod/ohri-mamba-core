@@ -24,7 +24,7 @@ BEGIN
     END IF;
 
     IF @column_labels IS NOT NULL THEN
-            PREPARE deletetb FROM @drop_table;
+        PREPARE deletetb FROM @drop_table;
         PREPARE createtb FROM @create_table;
 
         EXECUTE deletetb;

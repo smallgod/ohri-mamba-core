@@ -10,7 +10,7 @@ BEGIN
 
     SET session group_concat_max_len = 20000;
     SET @column_labels := NULL;
-    SET @tbl_obs_group_name = CONCAT(flat_encounter_table_name,'_',obs_group_name);
+    SET @tbl_obs_group_name = CONCAT(flat_encounter_table_name, '_', obs_group_name);
 
     SET @drop_table = CONCAT('DROP TABLE IF EXISTS `', @tbl_obs_group_name, '`');
 
